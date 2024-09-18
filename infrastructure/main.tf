@@ -1,6 +1,6 @@
 module "core_network" {
-  source   = "../modules/tf-hwc-vpc"
-  vpc_name = "core"
+  source   = "github.com/Huawei-APAC-Professional-Services/terraform-module/vpc"
+  vpc_name = "example"
   vpc_cidr = "10.0.0.0/16"
   subnets = [
     {
@@ -41,38 +41,28 @@ resource "huaweicloud_cce_cluster" "main" {
   delete_all             = true
 }
 
-data "huaweicloud_elb_flavors" "main_share_elb" {
-  type            = "L4"
-  max_connections = 1000000
-  cps             = 20000
-  bandwidth       = 100
-}
+resource "huaweicloud_cce_node_pool" "node_pool" {
+  cluster_id               = huaweicloud_cce_cluster.main.id
+  name                     = "prodpool"
+  os                       = "Ubuntu 22.04"
+  initial_node_count       = 2
+  flavor_id                = "c7n.xlarge.2"
+  password                 = "P@ssw0rd123"
+  scall_enable             = true
+  min_node_count           = 1
+  max_node_count           = 5
+  scale_down_cooldown_time = 100
+  priority                 = 1
+  type                     = "vm"
 
-resource "huaweicloud_vpc_eip" "main_share_elb" {
-  publicip {
-    type = "5_bgp"
+  root_volume {
+    size       = 100
+    volumetype = "SSD"
   }
-
-  bandwidth {
-    share_type  = "PER"
-    name        = "main-elb-eip"
-    size        = 100
-    charge_mode = "traffic"
+  data_volumes {
+    size       = 100
+    volumetype = "SSD"
   }
-}
-
-resource "huaweicloud_elb_loadbalancer" "main_share_elb" {
-  name              = "main-share-elb"
-  cross_vpc_backend = true
-
-  vpc_id         = module.core_network.vpc_id
-  ipv4_subnet_id = module.core_network.ipv4_subnets["elb-subnet"]
-
-  l4_flavor_id = data.huaweicloud_elb_flavors.main_share_elb.ids[0]
-
-  availability_zone = ["ap-southeast-3a", "ap-southeast-3b"]
-
-  ipv4_eip_id = huaweicloud_vpc_eip.main_share_elb.id
 }
 
 output "main_cluster_api_server" {
@@ -89,12 +79,4 @@ output "main_cluster_client_key" {
 
 output "main_cluster_client_certificate" {
   value = base64decode(huaweicloud_cce_cluster.main.certificate_users[0]["client_certificate_data"])
-}
-
-output "main_share_elb_id" {
-  value = huaweicloud_elb_loadbalancer.main_share_elb.id
-}
-
-output "main_share_elb_public_ip" {
-  value = huaweicloud_vpc_eip.main_share_elb.address
 }

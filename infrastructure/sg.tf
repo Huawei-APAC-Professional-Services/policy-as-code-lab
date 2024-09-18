@@ -3,7 +3,7 @@ resource "huaweicloud_networking_secgroup" "app_http" {
   description = "security group for application"
 }
 
-resource "huaweicloud_networking_secgroup_rule" "test" {
+resource "huaweicloud_networking_secgroup_rule" "application" {
   security_group_id = huaweicloud_networking_secgroup.app_http.id
   direction         = "ingress"
   action            = "allow"
