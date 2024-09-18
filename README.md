@@ -17,5 +17,5 @@
        commit id: "add sni check"
        checkout main
        merge feature-elb-ssl-fix
-       commit id: "thrid relase" tag: "v0.0.2"
+       commit id: "thrid relase" tag: "v0.0.3"
 ```
