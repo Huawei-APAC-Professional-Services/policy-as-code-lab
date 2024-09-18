@@ -2,20 +2,24 @@
 
 ```mermaid
     gitGraph
-       commit id: "first relase" tag: "v0.0.1"
-       branch feature-elb-ssl
-       checkout feature-elb-ssl
-       commit id: "add ssl parameter"
-       commit id: "add ssl resource"
-       commit id: "change resource name"
+       commit id: "initial"
+       branch develop
+       checkout develop
+       branch feature-creating-ecs
+       checkout feature-creating-ecs
+       commit id: "creating ecs"
+       commit id: "adding additional nic"
+       commit id: "adding additional disk"
+       checkout develop
+       merge feature-creating-ecs
        checkout main
-       merge feature-elb-ssl
-       commit id: "second relase" tag: "v0.0.2"
-       branch feature-elb-ssl-fix
-       checkout feature-elb-ssl-fix
-       commit id: "add sni cert"
-       commit id: "add sni check"
+       merge develop
+       checkout develop
+       branch feature-adding-elb
+       commit id: "adding elb resource"
+       commit id: "associating ecs with elb"
+       checkout develop
+       merge feature-adding-elb
        checkout main
-       merge feature-elb-ssl-fix
-       commit id: "thrid relase" tag: "v0.0.3"
+       merge develop
 ```
