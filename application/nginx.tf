@@ -1,4 +1,5 @@
-resource "kubernetes_deployment_v1" "example" {
+resource "kubernetes_deployment_v1" "nginx" {
+  depends_on = [kubernetes_manifest.cel_max_replicas, kubernetes_manifest.cel_replicas]
   metadata {
     name = "nginx-deployment"
     labels = {
@@ -62,6 +63,7 @@ resource "kubernetes_deployment_v1" "example" {
 }
 
 resource "kubernetes_service_v1" "nginx" {
+  depends_on = [kubernetes_manifest.cel_max_replicas, kubernetes_manifest.cel_replicas]
   metadata {
     name = "nginx"
     labels = {

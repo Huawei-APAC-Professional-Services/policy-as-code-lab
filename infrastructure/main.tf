@@ -24,7 +24,7 @@ resource "huaweicloud_vpc_eip" "kube_eip" {
   }
   bandwidth {
     name        = "kube-api"
-    size        = 300
+    size        = var.eip_bandwidth
     share_type  = "PER"
     charge_mode = "traffic"
   }
