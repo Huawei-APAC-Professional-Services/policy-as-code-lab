@@ -24,5 +24,5 @@ terraform {
 }
 
 provider "huaweicloud" {
-  region = "ap-southeast-3"
+  region = "ap-southeast-1"
 }
