@@ -101,6 +101,115 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
    * Password: The password provided by Organizer
 ![Endpoints5](./resources/6-pipeline-8.png)
 
+## Creating Terraform Validation Job
+1. On the `CodeArts` service page, Select `CICD` -> `Build` -> `Create Task`
+![CreateTerraformValidation](./resources/7-terraformvalidation-1.png)
+
+2. On the creation page, use `terrafrom-validation` and click `Next` and Select `Shell` template
+![CreateTerraformValidation1](./resources/7-terraformvalidation-2.png)
+![CreateTerraformValidation2](./resources/7-terraformvalidation-3.png)
+
+3. On the task page, Click `...` on the right of job name and Select `Delete` to delete the job
+![CreateTerraformValidation2](./resources/7-terraformvalidation-4.png)
+
+4. On the left side panel, Click `Add Build Actions` to add a new action, in the action list, Select `Use SWR Public Image`
+![CreateTerraformValidation3](./resources/7-terraformvalidation-5.png)
+
+5. Provide the following parameters for the job
+   * `Action Name`: ```Terrafrom Validation```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ````
+      export HW_ACCESS_KEY=${HW_ACCESS_KEY}
+      export HW_SECRET_KEY=${HW_SECRET_KEY}
+      export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
+      export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
+      terraform -chdir=infrastructure init
+      terraform -chdir=infrastructure validate
+      terraform -chdir=application init
+      terraform -chdir=application validate
+      ```
+![CreateTerraformValidation4](./resources/7-terraformvalidation-6.png)
+
+6. Select the `Parameters` tab on the top of the page and Create the following two parameters with empty value and enable the `Runtime Settings`
+   * Name: `HW_ACCESS_KEY`
+   * Name: `HW_SECRET_KEY`
+![CreateTerraformValidation5](./resources/7-terraformvalidation-7.png)
+
+7. Save the task
+
+## Creating Checkov Validation Job
+1. On the `CodeArts` service page, Select `CICD` -> `Build` -> `Create Task`
+![CreateTerraformValidation](./resources/7-terraformvalidation-1.png)
+
+2. On the creation page, use `checkov-validation` and click `Next` and Select `Shell` template
+![checkov1](./resources/8-checkovvalidation-1.png)
+![checkov2](./resources/8-checkovvalidation-2.png)
+
+3. On the task page, Click `...` on the right of job name and Select `Delete` to delete the job
+![checkov3](./resources/8-checkovvalidation-3.png)
+
+4. On the left side panel, Click `Add Build Actions` to add a new action, in the action list, Select `Use SWR Public Image`
+![checkov4](./resources/8-checkovvalidation-4.png)
+
+5. Provide the following parameters for the job
+   * `Action Name`: ```Checkov Validation```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ````
+      checkov -d infrastructure --download-external-modules true --external-checks-git https://github.com/Huawei-APAC-Professional-Services/terraform-policy.git
+      checkov -d application --download-external-modules true --external-checks-git https://github.com/Huawei-APAC-Professional-Services/terraform-policy.git
+      ```
+6. Save the task
+
+## Creating Terraform Plan Job
+1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
+![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
+
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-plan`
+![Terraformplaninfra1](./resources/9-infraterraformplan-2.png)
+
+3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
+   * `Action Name`: ```Terrafrom Plan```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ````
+      export HW_ACCESS_KEY=${HW_ACCESS_KEY}
+      export HW_SECRET_KEY=${HW_SECRET_KEY}
+      export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
+      export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
+      terraform -chdir=infrastructure init
+      terraform -chdir=infrastructure plan
+      terraform -chdir=application init
+      terraform -chdir=application plan
+      ```
+![terrafromplan4](./resources/9-infraterraformplan-3.png)
+4. Save the task
+
+## Creating Terraform Apply Job
+1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
+![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
+
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-apply`
+![Terraformapply](./resources/10-infraterraappy-1.png)
+
+3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
+   * `Action Name`: ```Terrafrom Apply```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ````
+      export HW_ACCESS_KEY=${HW_ACCESS_KEY}
+      export HW_SECRET_KEY=${HW_SECRET_KEY}
+      export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
+      export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
+      terraform -chdir=infrastructure init
+      terraform -chdir=infrastructure apply -auto-approve
+      terraform -chdir=application init
+      terraform -chdir=application apply -auto-approve
+      ```
+![terraformplan1](./resources/10-infraterraappy-2.png)
+4. Save the task
+
 ## Creating Deployment Pipeline
 1. On the `CodeArts` service page, Select `CICD` -> `Pipeline`
 ![Pipeline](./resources/6-pipeline-1.png)
@@ -118,8 +227,6 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
 ![Pipeline4](./resources/6-pipeline-11.png)
 
 6. Set the following parameters with the credentials created in [Create AK/SK](#create-aksk)
-```AWS_ACCESS_KEY_ID``` 
-```AWS_SECRET_ACCESS_KEY```
 ```HW_ACCESS_KEY``` 
 ```HW_SECRET_KEY```
 
@@ -127,10 +234,56 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
 
 ![Pipeline6](./resources/6-pipeline-13.png)
 
-7. Change to `Task Orchestration` tab and click `Edit` icon to modify the state name to `Validation`
+7. Change to `Task Orchestration` tab and click `Edit` icon to modify the stage name to `Validation`
 ![Pipeline7](./resources/6-pipeline-14.png)
 
 ![Pipeline8](./resources/6-pipeline-15.png)
 
-8. Click `New Job` to create a build job
-![Pipeline9]
+8. Click `New Job` to create a build job, for the job type, select `Build`
+![Pipeline16](./resources/6-pipeline-16.png)
+
+9. On the job configuration page, select the `terraform-validation` task and `policy-as-code-lab` repository, for the following parameters, using the following values.
+   * Name: `terraform validation`
+   * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
+   * HW_SECRET_KEY: `${HW_SECRET_KEY}`
+![pipelinevalidation1](./resources/6-pipeline-17.png)
+
+10. On the pipeline page, Click `+Parallel Job` to add another job under `Validation` stage
+![pipelinevalidation2](./resources/6-pipeline-18.png)
+
+11. On the job configuration page, providing the following parameters:
+   * Name: `checkov validation`
+   * Select Task: `checkov-validation`
+   * Repository: `policy-as-code-lab`
+![pipelinevalidation3](./resources/6-pipeline-19.png)
+
+12. On the pipeline configuration page, Click `+Stage` to create a `Plan` stage
+![pipelinevalidation3](./resources/6-pipeline-20.png)
+
+![pipelinevalidation4](./resources/6-pipeline-21.png)
+
+13. Under the `Plan` stage, add a `terraform plan` job, to configure the job with the following parameters:
+   * Name: `terraform plan`
+   * Select Task: `terraform-plan`
+   * Repository: `policy-as-code-lab`
+   * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
+   * HW_SECRET_KEY: `${HW_SECRET_KEY}`
+
+![pipelinevalidation5](./resources/6-pipeline-22.png)
+
+14. On the pipeline configuration page, Click `+Stage` to create a `Deployment` stage
+![pipelinevalidation3](./resources/6-pipeline-23.png)
+
+15. Under the `Deployment` stage, add a `terraform apply` job, to configure the job with the following parameters:
+   * Name: `terraform apply`
+   * Select Task: `terraform-apply`
+   * Repository: `policy-as-code-lab`
+   * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
+   * HW_SECRET_KEY: `${HW_SECRET_KEY}`
+![pipelinevalidation3](./resources/6-pipeline-24.png)
+
+16. On the pipeline page, Click `Save and Execute` to run the pipeline
+![pipelinevalidation3](./resources/6-pipeline-25.png)
+
+![pipelinevalidation3](./resources/6-pipeline-26.png)
+
