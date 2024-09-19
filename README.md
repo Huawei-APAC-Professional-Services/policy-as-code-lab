@@ -162,15 +162,15 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
       ```
 6. Save the task
 
-## Creating Terraform Plan Job
+## Creating Terraform Plan Job - infra
 1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
 ![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
 
-2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-plan`
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-plan-infra`
 ![Terraformplaninfra1](./resources/9-infraterraformplan-2.png)
 
 3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
-   * `Action Name`: ```Terrafrom Plan```
+   * `Action Name`: ```Terrafrom Plan Infrastructure```
    * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
    * `Commands`:
       ````
@@ -286,4 +286,12 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
 ![pipelinevalidation3](./resources/6-pipeline-25.png)
 
 ![pipelinevalidation3](./resources/6-pipeline-26.png)
+
+17. The pipeline is not ready to run due to a serials of policy violation, You job is to fix the pipeline and deploy the application
+![PipelineResult](./resources/11-result-1.png)
+
+18.
+
+# Solution
+
 

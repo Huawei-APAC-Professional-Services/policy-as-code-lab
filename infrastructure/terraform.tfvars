@@ -1,1 +1,1 @@
-eip_bandwidth = 100
+eip_bandwidth = 300
