@@ -173,28 +173,26 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
    * `Action Name`: ```Terrafrom Plan Infrastructure```
    * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
    * `Commands`:
-      ````
+      ```
       export HW_ACCESS_KEY=${HW_ACCESS_KEY}
       export HW_SECRET_KEY=${HW_SECRET_KEY}
       export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
       export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
       terraform -chdir=infrastructure init
-      terraform -chdir=infrastructure plan
-      terraform -chdir=application init
-      terraform -chdir=application plan
+      terraform -chdir=infrastructure -no-color plan
       ```
 ![terrafromplan4](./resources/9-infraterraformplan-3.png)
 4. Save the task
 
-## Creating Terraform Apply Job
+## Creating Terraform Apply Job - infrastructure
 1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
 ![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
 
-2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-apply`
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-apply-infra`
 ![Terraformapply](./resources/10-infraterraappy-1.png)
 
 3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
-   * `Action Name`: ```Terrafrom Apply```
+   * `Action Name`: ```Terrafrom Apply Infrastructure```
    * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
    * `Commands`:
       ````
@@ -204,10 +202,52 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
       export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
       terraform -chdir=infrastructure init
       terraform -chdir=infrastructure apply -auto-approve
+      ```
+![terraformplan1](./resources/10-infraterraappy-2.png)
+4. Save the task
+
+## Creating Terraform Plan Job - Application
+1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
+![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
+
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-plan-application`
+![Terraformplaninfra1](./resources/9-infraterraformplan-2.png)
+
+3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
+   * `Action Name`: ```Terrafrom Plan Application```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ```
+      export HW_ACCESS_KEY=${HW_ACCESS_KEY}
+      export HW_SECRET_KEY=${HW_SECRET_KEY}
+      export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
+      export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
+      terraform -chdir=application init
+      terraform -chdir=application -no-color plan
+      ```
+![terrafromplan4](./resources/13-appplan-1.png)
+4. Save the task
+
+## Creating Terraform Apply Job - application
+1. On the `CodeArts Build` Page, Click the `...` icon on the `terraform-validation` job to Clone a new job
+![Terraformplaninfra](./resources/9-infraterraformplan-1.png)
+
+2. Select `Basic Information` tab on the top of the page and Change the name to `terrafrom-apply-application`
+![Terraformapply](./resources/10-infraterraappy-1.png)
+
+3. Select the `Build Actions` tab and the `Terrafrom Validation` job on the left side panel and Change the following the following parameters for the job
+   * `Action Name`: ```Terrafrom Apply Application```
+   * `Image Address`: ```swr.ap-southeast-3.myhuaweicloud.com/core/ubuntu:codearts1```
+   * `Commands`:
+      ````
+      export HW_ACCESS_KEY=${HW_ACCESS_KEY}
+      export HW_SECRET_KEY=${HW_SECRET_KEY}
+      export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
+      export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
       terraform -chdir=application init
       terraform -chdir=application apply -auto-approve
       ```
-![terraformplan1](./resources/10-infraterraappy-2.png)
+![terraformplan1](./resources/13-appplan-2.png)
 4. Save the task
 
 ## Creating Deployment Pipeline
@@ -257,41 +297,85 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
    * Repository: `policy-as-code-lab`
 ![pipelinevalidation3](./resources/6-pipeline-19.png)
 
-12. On the pipeline configuration page, Click `+Stage` to create a `Plan` stage
+12. On the pipeline configuration page, Click `+Stage` to create a `Plan-Infrastructure` stage
 ![pipelinevalidation3](./resources/6-pipeline-20.png)
 
 ![pipelinevalidation4](./resources/6-pipeline-21.png)
 
-13. Under the `Plan` stage, add a `terraform plan` job, to configure the job with the following parameters:
-   * Name: `terraform plan`
-   * Select Task: `terraform-plan`
+13. Under the `Plan-Infrastructure` stage, add a `terraform plan` job, to configure the job with the following parameters:
+   * Name: `infrastructure terraform plan`
+   * Select Task: `terraform-plan-infra`
    * Repository: `policy-as-code-lab`
    * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
    * HW_SECRET_KEY: `${HW_SECRET_KEY}`
 
 ![pipelinevalidation5](./resources/6-pipeline-22.png)
 
-14. On the pipeline configuration page, Click `+Stage` to create a `Deployment` stage
+14. Click `+` icon on the bottom of `infrastructure terraform plan` task to add a serial task
+![AddManualApprovde](./resources/14-manualapprove-1.png)
+
+15. On the job Configuration page, Select `ManualReview` job
+![AddManualApprove1](./resources/14-manualapprove-2.png)
+
+16. Changing the following parameter for `ManualReview` job
+   * Name: `ManualReview-Infra`
+   * Reviewer: Select account admin as reviwer
+   * Review Duration: `2 Hours`
+![AddManualApprove2](./resources/14-manualapprove-3.png)
+
+
+17. On the pipeline configuration page, Click `+Stage` to create a `Deployment-Infra` stage
 ![pipelinevalidation3](./resources/6-pipeline-23.png)
 
-15. Under the `Deployment` stage, add a `terraform apply` job, to configure the job with the following parameters:
+15. Under the `Deployment-Infra` stage, add a `terraform apply` job, to configure the job with the following parameters:
    * Name: `terraform apply`
-   * Select Task: `terraform-apply`
+   * Select Task: `terraform-apply-infra`
    * Repository: `policy-as-code-lab`
    * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
    * HW_SECRET_KEY: `${HW_SECRET_KEY}`
 ![pipelinevalidation3](./resources/6-pipeline-24.png)
 
-16. On the pipeline page, Click `Save and Execute` to run the pipeline
+16. On the pipeline configuration page, Click `+Stage` to create a `Plan-Application` stage
+![pipelinevalidation3](./resources/6-pipeline-20.png)
+
+17. Under the `Plan-Application` stage, add a `terraform plan` job, to configure the job with the following parameters:
+   * Name: `application terraform plan`
+   * Select Task: `terraform-plan-application`
+   * Repository: `policy-as-code-lab`
+   * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
+   * HW_SECRET_KEY: `${HW_SECRET_KEY}`
+![appplan](./resources/15-appplan-1.png)
+
+18. Click `+` icon on the bottom of `application terraform plan` task to add a serial task
+![AddManualApprovde](./resources/14-manualapprove-4.png)
+
+19. On the job Configuration page, Select `ManualReview` job
+![AddManualApprove1](./resources/14-manualapprove-2.png)
+
+20. Changing the following parameter for `ManualReview` job
+   * Name: `ManualReview-Application`
+   * Reviewer: Select account admin as reviwer
+   * Review Duration: `2 Hours`
+![AddManualApprove2](./resources/14-manualapprove-5.png)
+
+21. On the pipeline configuration page, Click `+Stage` to create a `Deployment-Application` stage
+![pipelinevalidation3](./resources/15-appapply-1.png)
+
+22. Under the `Deployment-Application` stage, add a `terraform apply` job, to configure the job with the following parameters:
+   * Name: `terraform apply application`
+   * Select Task: `terraform-apply-application`
+   * Repository: `policy-as-code-lab`
+   * HW_ACCESS_KEY: `${HW_ACCESS_KEY}`
+   * HW_SECRET_KEY: `${HW_SECRET_KEY}`
+![pipelinevalidation3](./resources/15-appapply-2.png)
+
+23. On the pipeline page, Click `Save and Execute` to run the pipeline
 ![pipelinevalidation3](./resources/6-pipeline-25.png)
 
 ![pipelinevalidation3](./resources/6-pipeline-26.png)
 
-17. The pipeline is not ready to run due to a serials of policy violation, You job is to fix the pipeline and deploy the application
+24. The pipeline is not ready to run due to a serials of policy violation, You job is to fix the pipeline and deploy the application
 ![PipelineResult](./resources/11-result-1.png)
 
-18.
-
-# Solution
 
 
