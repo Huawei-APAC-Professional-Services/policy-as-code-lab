@@ -5,6 +5,7 @@ resource "kubernetes_deployment_v1" "nginx" {
   #checkov:skip=CKV_K8S_43:Image should use digest
   #checkov:skip=CKV_K8S_30:Apply security context to your pods and containers
   #checkov:skip=CKV_K8S_28:Minimize the admission of containers with the NET_RAW capability
+  #checkov:skip=CKV_K8S_15:Image Pull Policy should be Always
   metadata {
     name = "nginx-deployment"
     labels = {

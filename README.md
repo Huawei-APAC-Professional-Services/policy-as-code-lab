@@ -388,5 +388,10 @@ You can find the Repo URL at the Repo page:
 
 Note: There might be multiple checks against same parameter, only need to fix one check will make it compliant.
 
+# Success Criteria
+Once all the jobs are succeeded, log in to huawei cloud console and go to `ELB` service, you can find the EIP of ELB created by this workshop, you can use this EIP to access our nginx application and you will see the typical Nginx page.
+![Suc1](./resources/19-succeed-1.png)
+![Suc1](./resources/19-succeed-2.png)
+
 
 
