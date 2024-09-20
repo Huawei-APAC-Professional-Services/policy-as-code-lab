@@ -382,5 +382,11 @@ You can find the Repo URL at the Repo page:
 27. The pipeline is not ready to run due to a serials of policy violation, You job is to fix the pipeline and deploy the application
 ![PipelineResult](./resources/11-result-1.png)
 
+28. You can by click the failed to job to check why it fails and fix it accordingly
+![failed](./resources/17-result-1.png)
+![failed1](./resources/17-result-2.png)
+
+Note: There might be multiple checks against same parameter, only need to fix one check will make it compliant.
+
 
 
