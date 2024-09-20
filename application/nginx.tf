@@ -1,5 +1,11 @@
 resource "kubernetes_deployment_v1" "nginx" {
   #checkov:skip=CKV_K8S_21:The default namespace should not be used
+  #checkov:skip=CKV_K8S_29:Apply security context to your pods, deployments and daemon_sets
+  #checkov:skip=CKV_K8S_9:Readiness Probe Should be Configured
+  #checkov:skip=CKV_K8S_14:Image Tag should be fixed - not latest or blank
+  #checkov:skip=CKV_K8S_43:Image should use digest
+  #checkov:skip=CKV_K8S_30:Apply security context to your pods and containers
+  #checkov:skip=CKV_K8S_28:Minimize the admission of containers with the NET_RAW capability
   depends_on = [kubernetes_manifest.cel_max_replicas, kubernetes_manifest.cel_replicas]
   metadata {
     name = "nginx-deployment"

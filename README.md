@@ -179,7 +179,7 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
       export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
       export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
       terraform -chdir=infrastructure init
-      terraform -chdir=infrastructure -no-color plan
+      terraform -chdir=infrastructure plan -no-color
       ```
 ![terrafromplan4](./resources/9-infraterraformplan-3.png)
 4. Save the task
@@ -223,7 +223,7 @@ In this workshop, Huawei Cloud OBS is used as the backend of terraform
       export AWS_ACCESS_KEY_ID=${HW_ACCESS_KEY}
       export AWS_SECRET_ACCESS_KEY=${HW_SECRET_KEY}
       terraform -chdir=application init
-      terraform -chdir=application -no-color plan
+      terraform -chdir=application plan -no-color
       ```
 ![terrafromplan4](./resources/13-appplan-1.png)
 4. Save the task
