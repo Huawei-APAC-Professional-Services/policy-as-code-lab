@@ -70,7 +70,6 @@ resource "kubernetes_deployment_v1" "nginx" {
 }
 
 resource "kubernetes_service_v1" "nginx" {
-  #checkov:skip=CKV_K8S_21:The default namespace should not be used
   depends_on = [kubernetes_manifest.cel_max_replicas, kubernetes_manifest.cel_replicas]
   metadata {
     name = "nginx"
