@@ -72,3 +72,12 @@ tags = {
 ```
 ![ChangeTags1](./resources/12-solution-5.png)
 
+## Fix failed check on Public OBS Bucket
+
+This solution will fix the following failed checks
+* CKV_HWC_OBS_1: "Ensure obs bucket policy is not public"
+![failedcheck8](./resources/18-failed-8.png)
+
+### Guidance
+Open the `obs.tf` file under `Infrastructure` folder. Click `Edit` icon to change the value of `acl` to `private`
+![Changeacl](./resources/12-solution-7.png)
